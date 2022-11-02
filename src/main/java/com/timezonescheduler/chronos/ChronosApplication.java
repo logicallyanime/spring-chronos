@@ -15,7 +15,7 @@ public class ChronosApplication {
 	@Bean
 	CommandLineRunner runner(UserRepo repo)	{
 		return args -> {
-			User user = new User("Bob Saget","bobsaget@fakemail.com");
+			User user = new User("Bobby Saget","bobsaget@fakemail.com");
 			repo.insert(user);
 		};
 
