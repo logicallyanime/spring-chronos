@@ -8,8 +8,6 @@
     <schema id="3" parent="1" name="chronos"/>
     <schema id="4" parent="1" name="config"/>
     <schema id="5" parent="1" name="local"/>
-    <table id="6" parent="3" name="Calendar"/>
-    <table id="7" parent="3" name="Group"/>
-    <table id="8" parent="3" name="User"/>
+    <table id="6" parent="3" name="delete_me"/>
   </database-model>
 </dataSource>
