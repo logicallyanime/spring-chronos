@@ -12,13 +12,13 @@ public class ChronosApplication {
 		SpringApplication.run(ChronosApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner runner(UserRepo repo)	{
-		return args -> {
-			User user = new User("Bobby Saget","bobsaget@fakemail.com");
-			repo.insert(user);
-		};
-
-	}
+//	@Bean
+//	CommandLineRunner runner(UserRepo repo)	{
+//		return args -> {
+//			User user = new User("Bob Saget","bobsaget@fakemail.com");
+//			repo.insert(user);
+//		};
+//
+//	}
 
 }
