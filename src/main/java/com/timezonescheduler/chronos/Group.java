@@ -3,6 +3,7 @@ package com.timezonescheduler.chronos;
 import java.util.ArrayList;
 
 public class Group {
+    private Long id;
     private String name;
     private ArrayList<User> userList = new ArrayList<User>();
     private String meeting = null;
@@ -27,6 +28,12 @@ public class Group {
     public void removeUser (User removedUser) {
         //int removedUserIndex = userList.indexOf(removedUser);
         userList.remove(removedUser);
+    }
+
+    public ArrayList<User> getUserList(){ return userList; }
+
+    public void setUserList(ArrayList<User> newUserList){
+        userList = newUserList;
     }
 
     public void addMeeting (String date) {
