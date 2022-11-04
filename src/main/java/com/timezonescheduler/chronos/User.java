@@ -2,6 +2,7 @@ package com.timezonescheduler.chronos;
 
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+//import javax.persistence.*;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,8 @@ public class User {
     //Google oath ID or whatever?
     private Calendar calendar;
     private ArrayList<Group> groups;
+
+    public User() {}
 
     public User(String name, String email) {
         this.name = name;
