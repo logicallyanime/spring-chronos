@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.transaction.Transactional;
+import javax.jdo.annotations.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
