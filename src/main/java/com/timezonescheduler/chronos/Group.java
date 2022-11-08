@@ -3,14 +3,16 @@ package com.timezonescheduler.chronos;
 import java.util.ArrayList;
 
 public class Group {
-    private Long id;
+    private String _id;
     private String name;
     private ArrayList<User> userList = new ArrayList<User>();
     private String meeting = null;
+    private User groupLeader;
 
-    public Group (String groupName, User groupLeader) {
-        name = groupName;
-        userList.add(groupLeader);
+    public Group (String name, User groupLeader) {
+        this.name = name;
+        this.groupLeader = groupLeader;
+        this.userList.add(groupLeader);
     }
 
     public String getName () {
