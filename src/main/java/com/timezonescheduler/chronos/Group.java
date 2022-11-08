@@ -47,8 +47,6 @@ public class Group {
     //Need to figure out
     /*
     public void addMeetingToCalendar () {
-
     }
-
      */
 }
