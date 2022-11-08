@@ -9,6 +9,7 @@ import java.util.ArrayList;
 @Data
 @Document
 public class User {
+    private String _id;
     private String name;
     private String email;
     private double timezone; //UTC -12 =< t >= +14

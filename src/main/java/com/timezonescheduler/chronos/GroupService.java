@@ -28,17 +28,25 @@ public class GroupService {
         groupRepo.save(group);
     }
 
-    public void removeGroup(Long groupId){
-        boolean exists = groupRepo.existsById(String.valueOf(groupId));
+    public Optional<Group> getGroup(String groupId) {
+        boolean exists = groupRepo.existsById(groupId);
+        if (!exists) {
+            throw new IllegalStateException("user with id " + groupId + " does not exist");
+        }
+        return groupRepo.findById(groupId);
+    }
+
+    public void removeGroup(String groupId){
+        boolean exists = groupRepo.existsById(groupId);
         if(!exists){
             throw new IllegalStateException("group with id " + groupId + " does not exist.");
         }
-        groupRepo.deleteById(String.valueOf(groupId));
+        groupRepo.deleteById(groupId);
     }
 
     @Transactional
-    public void updateGroup(long groupId, String name, ArrayList<User> userList){
-        Group group = groupRepo.findById(String.valueOf(groupId)).orElseThrow(() -> new IllegalStateException(
+    public void updateGroup(String groupId, String name, ArrayList<User> userList){
+        Group group = groupRepo.findById(groupId).orElseThrow(() -> new IllegalStateException(
                 "group with id " + groupId + " does not exist."));
         if(name != null &&
                 name.length() > 0 &&
