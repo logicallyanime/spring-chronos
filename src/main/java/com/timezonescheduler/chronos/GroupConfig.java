@@ -22,7 +22,7 @@ public class GroupConfig {
             );
 
             repo.saveAll(
-                    List.of()
+                    List.of(exampleGroup, prototypeGroup)
             );
         };
     }
