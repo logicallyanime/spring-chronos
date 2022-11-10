@@ -1,6 +1,12 @@
 package com.timezonescheduler.chronos;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.jdo.annotations.Transactional;
@@ -50,20 +56,46 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(String userId, String name, String email) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("user with id " + userId + "does not exist"));
+    public ResponseEntity<User> updateUser(String userId, JsonPatch userPatch) {
+        ResponseEntity<User> respUser = applyPatchToUser(userPatch, userId);
+        if (respUser.getStatusCode() != HttpStatus.OK || respUser.getBody().getName() == null || respUser.getBody().getName().length() <= 0
+                || respUser.getBody().getEmail() != null || respUser.getBody().getEmail().length() <= 0) {
+            if(respUser.getStatusCode() == HttpStatus.OK){
 
-        if (name != null && name.length() > 0 && !Objects.equals(user.getName(), name)) {
-            user.setName(name);
-        }
-
-        if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
-            Optional<User> userOptional = userRepo.findUserByEmail(email);
-            if (userOptional.isPresent()) {
-                throw new IllegalStateException("email taken");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
-            user.setEmail(email);
+        }
+        return respUser;
+//        userRepo.save(user);
+//        if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
+//        Optional<User> userOptional = userRepo.findUserByEmail(email);
+//        if (userOptional.isPresent()) {
+//            throw new IllegalStateException("email taken");
+//        }
+//        user.setEmail(email);
+//        userRepo.save(user);
+//    }
+    }
+
+
+//
+
+    private ResponseEntity<User> applyPatchToUser(
+            JsonPatch patch, String userId) {
+        try {
+            User user = userRepo.findById(userId)
+                    .orElseThrow(() -> new IllegalStateException("user with id " + userId + "does not exist"));
+
+            ObjectMapper objMap = new ObjectMapper();
+            JsonNode patched = patch.apply(objMap.convertValue(user, JsonNode.class));
+            User newUser = objMap.treeToValue(patched, User.class);
+
+            return ResponseEntity.ok(newUser);
+        } catch (JsonPatchException | JsonProcessingException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (IllegalStateException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 }
