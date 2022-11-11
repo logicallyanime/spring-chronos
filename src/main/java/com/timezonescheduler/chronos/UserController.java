@@ -46,4 +46,12 @@ public class UserController {
     {
         userService.updateUser(userId, user);
     }
+
+    @PatchMapping("/update/{userId}")
+    public void patchResource(
+            @PathVariable String userId,
+            @RequestBody User newUser)
+    {
+        userService.patchResource(userId, newUser);
+    }
 }

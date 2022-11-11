@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.jdo.annotations.Transactional;
 import java.util.List;
@@ -95,6 +96,28 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (IllegalStateException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    public void patchResource(String userId, User newUser) {
+
+        User saveUser = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("user with id " + userId + "does not exist"));
+
+        boolean needUpdate = false;
+
+        if (StringUtils.hasLength(newUser.getName())) {
+            saveUser.setName(newUser.getName());
+            needUpdate = true;
+        }
+
+        if (StringUtils.hasLength(newUser.getEmail())) {
+            saveUser.setEmail(newUser.getEmail());
+            needUpdate = true;
+        }
+
+        if (needUpdate) {
+            userRepo.save(saveUser);
         }
     }
 
