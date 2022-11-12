@@ -39,6 +39,7 @@ public class UserController {
         userService.removeUser(userId);
     }
 
+    /*
     @PatchMapping(value ="{userId}")
     public void updateUser(
             @PathVariable("userId") String userId,
@@ -46,6 +47,8 @@ public class UserController {
     {
         userService.updateUser(userId, user);
     }
+
+     */
 
     @PatchMapping("/update/{userId}")
     public void patchResource(
