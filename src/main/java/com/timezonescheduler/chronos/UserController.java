@@ -1,5 +1,7 @@
 package com.timezonescheduler.chronos;
 
+import com.github.fge.jsonpatch.JsonPatch;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @RequestMapping("get/{userId}")
+    @GetMapping("{userId}")
     public Optional<User> getUser(@PathVariable("userId") String userId) {
         return userService.getUser(userId);
     }
@@ -32,15 +34,24 @@ public class UserController {
         userService.addNewUser(user);
     }
 
-    @RequestMapping("remove/{userId}")
+    @DeleteMapping("{userId}")
     public void removeUser(@PathVariable("userId") String userId) {
         userService.removeUser(userId);
     }
 
+    @PatchMapping(value ="{userId}")
     public void updateUser(
             @PathVariable("userId") String userId,
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String email) {
-        userService.updateUser(userId, name, email);
+            @RequestBody(required = false) JsonPatch user)
+    {
+        userService.updateUser(userId, user);
+    }
+
+    @PatchMapping("/update/{userId}")
+    public void patchResource(
+            @PathVariable String userId,
+            @RequestBody User newUser)
+    {
+        userService.patchResource(userId, newUser);
     }
 }

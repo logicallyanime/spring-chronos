@@ -33,7 +33,7 @@ public class GroupController {
         groupService.addGroup(group);
     }
 
-    @DeleteMapping(path = "{groupId}")
+    @RequestMapping("remove/{groupId}")
     public void removeGroup(@PathVariable("groupId") String groupId){
         groupService.removeGroup(groupId);
     }
