@@ -1,4 +1,4 @@
-package com.example.application;
+package com.timezonescheduler.chronos.application;
 
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
@@ -19,10 +19,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @PWA(name = "Chronos", shortName = "Chronos", offlineResources = {})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
-public class Application implements AppShellConfigurator {
+public class ChronosApplication implements AppShellConfigurator {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(ChronosApplication.class, args);
     }
 
 }

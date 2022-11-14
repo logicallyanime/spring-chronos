@@ -1,4 +1,4 @@
-package com.example.application.components.appnav;
+package com.timezonescheduler.chronos.application.components.appnav;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasSize;

@@ -1,10 +1,10 @@
-package com.example.application.views;
+package com.timezonescheduler.chronos.application.views;
 
 
-import com.example.application.components.appnav.AppNav;
-import com.example.application.components.appnav.AppNavItem;
-import com.example.application.views.about.AboutView;
-import com.example.application.views.helloworld.HelloWorldView;
+import com.timezonescheduler.chronos.application.components.appnav.AppNav;
+import com.timezonescheduler.chronos.application.components.appnav.AppNavItem;
+import com.timezonescheduler.chronos.application.views.about.AboutView;
+import com.timezonescheduler.chronos.application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
