@@ -1,8 +1,8 @@
 package com.timezonescheduler.chronos.application;
 
-import com.google.api.services.calendar.Calendar;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
+//import javax.persistence.*;
 
 import java.util.ArrayList;
 

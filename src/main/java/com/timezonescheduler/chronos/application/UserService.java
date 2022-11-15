@@ -1,11 +1,15 @@
 package com.timezonescheduler.chronos.application;
 
+//import com.github.fge.jsonpatch.*;
+import com.timezonescheduler.chronos.application.User;
+import com.timezonescheduler.chronos.application.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+        import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.jdo.annotations.Transactional;
 import java.util.List;
-import java.util.Optional;
+        import java.util.Optional;
 
 @Service
 public class UserService {
@@ -48,7 +52,7 @@ public class UserService {
         userRepo.deleteById(userId);
     }
 
-//    @Transactional
+    @Transactional
 //    public ResponseEntity<User> updateUser(String userId, JsonPatch userPatch) {
 //        ResponseEntity<User> respUser = applyPatchToUser(userPatch, userId);
 //        if (respUser.getStatusCode() != HttpStatus.OK || respUser.getBody().getName() == null || respUser.getBody().getName().length() <= 0
