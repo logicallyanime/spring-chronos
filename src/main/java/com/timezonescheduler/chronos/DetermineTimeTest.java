@@ -460,8 +460,6 @@ public class DetermineTimeTest{
         //================================================================
         //                ~:THINGS THAT BREAK MY BOY:~
         //================================================================
-        // 1) Events that start before the day and/or end after it's done
-        // 2) Making a meeting length that's longer than a day
         // 3) Other things probably
         //
     }
