@@ -38,11 +38,27 @@ public class GroupController {
         groupService.removeGroup(groupId);
     }
 
-    @PutMapping(path = "{groupId}")
+    @PatchMapping(path = "{groupId}")
     public void updateGroup(
             @PathVariable("groupId") String groupId,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) ArrayList<User> userList) {
         groupService.updateGroup(groupId, name, userList);
+    }
+
+    @PatchMapping(path = "adduser/{groupId}")
+    public void addUserToGroup(
+            @PathVariable("groupId") String groupId,
+            @RequestBody User user
+    ){
+        groupService.addUserToGroup(groupId, user);
+    }
+
+    @PatchMapping(path = "removeuser/{groupId}")
+    public void removeUserFromGroup(
+            @PathVariable("groupId") String groupId,
+            @RequestBody User user
+    ){
+        groupService.removeUserFromGroup(groupId, user);
     }
 }

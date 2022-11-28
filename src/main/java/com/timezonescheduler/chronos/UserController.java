@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +34,12 @@ public class UserController {
     @PostMapping
     public void registerNewUser(@RequestBody User user) {
         userService.addNewUser(user);
+    }
+
+    @PostMapping("contact/{newName}")
+    public void addContactAsUser(@PathVariable("newName") String newName) throws GeneralSecurityException, IOException {
+        String n1 = String.valueOf(newName.subSequence(1, newName.length() - 1));
+        userService.addContact(n1);
     }
 
     @DeleteMapping("{userId}")

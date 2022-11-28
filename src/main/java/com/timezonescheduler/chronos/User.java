@@ -1,6 +1,7 @@
 package com.timezonescheduler.chronos;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 //import javax.persistence.*;
 
@@ -15,6 +16,7 @@ public class User {
     private double timezone; //UTC -12 =< t >= +14
     //Google oath ID or whatever?
     private Calendar calendar;
+    @DBRef
     private ArrayList<Group> groups;
 
     public User() {}
@@ -24,7 +26,7 @@ public class User {
         this.email = email;
         this.calendar = null;
         this.timezone = 0;
-        this.groups = null;
+        this.groups = new ArrayList<>();
     }
 
     public String getName() {
@@ -57,5 +59,21 @@ public class User {
 
     public void setTimezone(double timezone) {
         this.timezone = timezone;
+    }
+
+    public void addGroup(Group group){
+        if(groups == null){
+            groups = new ArrayList<>();
+        }
+        groups.add(group);
+    }
+
+    public void removeGroup(Group group){
+        for(int i = 0; i < groups.size(); i++){
+            if(groups.get(i).equals(group.getId())){
+                groups.remove(i);
+                break;
+            }
+        }
     }
 }

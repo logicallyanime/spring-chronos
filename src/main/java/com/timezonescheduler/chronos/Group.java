@@ -24,12 +24,26 @@ public class Group {
     }
 
     public void addUser (User addedUser) {
+        for(User u : userList){
+            if(addedUser.getEmail().equals(u.getEmail())){
+                throw new IllegalStateException("Group with id " + _id + " already has user with email " + addedUser.getEmail());
+            }
+        }
         userList.add(addedUser);
     }
 
     public void removeUser (User removedUser) {
         //int removedUserIndex = userList.indexOf(removedUser);
-        userList.remove(removedUser);
+        for(int i = 0; i < userList.size(); i++){
+            if(userList.get(i).getEmail().equals(removedUser.getEmail())){
+                userList.remove(i);
+            }
+        }
+        if(groupLeader == null)
+        System.out.println(userList.get(0).getEmail() + " ~ " + groupLeader.getEmail());
+        if(!userList.get(0).getEmail().equals(groupLeader.getEmail())){
+            groupLeader = userList.get(0);
+        }
     }
 
     public ArrayList<User> getUserList(){ return userList; }
@@ -44,6 +58,14 @@ public class Group {
 
     public void removeMeeting () {
         meeting = null;
+    }
+
+    public User getGroupLeader(){
+        return groupLeader;
+    }
+
+    public String getId(){
+        return _id;
     }
 
     //Need to figure out

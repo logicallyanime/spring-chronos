@@ -48,15 +48,38 @@ public class GroupService {
     public void updateGroup(String groupId, String name, ArrayList<User> userList){
         Group group = groupRepo.findById(groupId).orElseThrow(() -> new IllegalStateException(
                 "group with id " + groupId + " does not exist."));
+        boolean changed = false;
         if(name != null &&
                 name.length() > 0 &&
                 !Objects.equals(group.getName(), name)) {
             group.setName(name);
+            changed = true;
         }
 
         if(userList != null &&
                 !Objects.equals(group.getUserList(), userList)){
             group.setUserList(userList);
+            changed = true;
         }
+        if(changed) {
+            groupRepo.save(group);
+        }
+    }
+
+    public void addUserToGroup(String groupId, User user) {
+        Group group = getGroup(groupId).get();
+        group.addUser(user);
+        user.addGroup(group);
+        updateGroup(groupId, group.getName(), group.getUserList());
+    }
+
+    public void removeUserFromGroup(String groupId, User user) {
+        Group group = getGroup(groupId).get();
+        group.removeUser(user);
+        if(group.getUserList().size() == 0){
+            removeGroup(groupId);
+        }
+        user.removeGroup(group);
+        updateGroup(groupId, group.getName(), group.getUserList());
     }
 }
