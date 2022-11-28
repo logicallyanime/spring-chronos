@@ -59,4 +59,8 @@ public class GroupService {
             group.setUserList(userList);
         }
     }
+
+    public void addUserToGroup () {
+
+    }
 }

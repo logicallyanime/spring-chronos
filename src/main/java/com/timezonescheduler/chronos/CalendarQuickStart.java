@@ -13,15 +13,16 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.*;
 import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.Events;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /* class to demonstrate use of Calendar events list API */
@@ -44,7 +45,7 @@ public class CalendarQuickStart {
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES =
-            Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+            Collections.singletonList(CalendarScopes.CALENDAR_EVENTS);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
     /**
@@ -84,7 +85,100 @@ public class CalendarQuickStart {
                         .setApplicationName(APPLICATION_NAME)
                         .build();
 
+
+        //Create Event Starts Here
+        createEvent(service);
+
         // List the next 10 events from the primary calendar.
+        readEvents(service);
+
+        //Delete Event Here
+        deleteEvent(service);
+
+        //Read Event After Deletion
+        readEvents(service);
+
+        //
+        //File tokenDelete = new File()
+
+        Files.walk(Path.of("tokens"))
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+
+    }
+
+    public static void deleteEvent (Calendar service) throws IOException {
+        DateTime now = new DateTime(System.currentTimeMillis());
+        Events events = service.events().list("primary")
+                .setMaxResults(10)
+                .setTimeMin(now)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
+        List<Event> items = events.getItems();
+
+        boolean removedEvent = false;
+        if (items.isEmpty()) {
+            System.out.println("No upcoming events found.");
+        } else {
+            for (Event event : items) {
+                System.out.println(event.getSummary());
+                if (event.getSummary() .equals("Event Dummy")) {
+                    String eventId = event.getId();
+                    System.out.println("Deleting Event with Summary of: Event and ID: " + eventId);
+                    service.events().delete("primary", eventId).execute();
+                    removedEvent = true;
+                }
+            }
+            if (!removedEvent) {
+                System.out.println("The event was not found");
+            }
+        }
+    }
+
+    public static void createEvent (Calendar service) throws IOException {
+        Event event = new Event()
+                .setSummary("Event Dummy")
+                .setLocation("Shineman 170")
+                .setDescription("Making a dummy event.");
+
+        DateTime startDateTime = new DateTime("2022-11-15T10:20:00-05:00");
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("America/New_York");
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime("2022-11-15T11:15:00-05:00");
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime)
+                .setTimeZone("America/New_York");
+        event.setEnd(end);
+
+        String[] recurrence = new String[] {"RRULE:FREQ=DAILY;COUNT=1"};
+        event.setRecurrence(Arrays.asList(recurrence));
+
+        EventAttendee[] attendees = new EventAttendee[] {
+                new EventAttendee().setEmail("jengler2@oswego.edu"),
+                //new EventAttendee().setEmail("tvanalst@oswego.edu"),
+        };
+        event.setAttendees(Arrays.asList(attendees));
+
+        EventReminder[] reminderOverrides = new EventReminder[] {
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+
+        String calendarId = "primary";
+        event = service.events().insert(calendarId, event).execute();
+        System.out.printf("Event created: %s\n", event.getHtmlLink());
+    }
+
+    public static void readEvents (Calendar service) throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
                 .setMaxResults(10)
@@ -99,10 +193,20 @@ public class CalendarQuickStart {
             System.out.println("Upcoming events");
             for (Event event : items) {
                 DateTime start = event.getStart().getDateTime();
+                List<EventAttendee> attendees = event.getAttendees();
+
                 if (start == null) {
                     start = event.getStart().getDate();
                 }
                 System.out.printf("%s (%s)\n", event.getSummary(), start);
+                if (attendees != null) {
+                    for (EventAttendee attendee : attendees) {
+                        String attendeeEmail = attendee.getEmail();
+                        System.out.println("The attendees are: " + attendeeEmail);
+                    }
+                } else {
+                    System.out.println("There are no attendees for the above event");
+                }
             }
         }
     }
