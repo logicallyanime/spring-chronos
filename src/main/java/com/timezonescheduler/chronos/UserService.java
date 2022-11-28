@@ -21,6 +21,23 @@ import com.google.api.services.people.v1.PeopleServiceScopes;
 import com.google.api.services.people.v1.model.ListConnectionsResponse;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Person;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.gmail.GmailScopes;
+import com.google.api.services.people.v1.PeopleService;
+import com.google.api.services.people.v1.PeopleServiceScopes;
+import com.google.api.services.people.v1.model.ListConnectionsResponse;
+import com.google.api.services.people.v1.model.Name;
+import com.google.api.services.people.v1.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -173,52 +190,6 @@ public class UserService {
         }
         userRepo.deleteById(userId);
     }
-
-    /*
-    @Transactional
-    public ResponseEntity<User> updateUser(String userId, JsonPatch userPatch) {
-        ResponseEntity<User> respUser = applyPatchToUser(userPatch, userId);
-        if (respUser.getStatusCode() != HttpStatus.OK || respUser.getBody().getName() == null || respUser.getBody().getName().length() <= 0
-                || respUser.getBody().getEmail() != null || respUser.getBody().getEmail().length() <= 0) {
-            if(respUser.getStatusCode() == HttpStatus.OK){
-
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
-        }
-        return respUser;
-//        userRepo.save(user);
-//        if (email != null && email.length() > 0 && !Objects.equals(user.getEmail(), email)) {
-//        Optional<User> userOptional = userRepo.findUserByEmail(email);
-//        if (userOptional.isPresent()) {
-//            throw new IllegalStateException("email taken");
-//        }
-//        user.setEmail(email);
-//        userRepo.save(user);
-//    }
-    }
-
-
-//
-
-    private ResponseEntity<User> applyPatchToUser(
-            JsonPatch patch, String userId) {
-        try {
-            User user = userRepo.findById(userId)
-                    .orElseThrow(() -> new IllegalStateException("user with id " + userId + "does not exist"));
-
-            ObjectMapper objMap = new ObjectMapper();
-            JsonNode patched = patch.apply(objMap.convertValue(user, JsonNode.class));
-            User newUser = objMap.treeToValue(patched, User.class);
-
-            return ResponseEntity.ok(newUser);
-        } catch (JsonPatchException | JsonProcessingException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (IllegalStateException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-     */
 
     public void patchResource(String userId, User newUser) {
 

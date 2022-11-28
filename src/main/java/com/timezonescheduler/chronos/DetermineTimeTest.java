@@ -63,31 +63,7 @@ public class DetermineTimeTest{
 
     //A bunch of datetimes so I don't have to keep using them
     //DateTime format: "yyyy-mm-ddThh:mm:ss-ZZ:ZZ"
-    public static DateTime dt0 = new DateTime("2022-11-16T00:00:00-05:00");
-    public static DateTime dt1 = new DateTime("2022-11-16T01:00:00-05:00");
-    public static DateTime dt2 = new DateTime("2022-11-16T02:00:00-05:00");
-    public static DateTime dt3 = new DateTime("2022-11-16T03:00:00-05:00");
-    public static DateTime dt4 = new DateTime("2022-11-16T04:00:00-05:00");
-    public static DateTime dt5 = new DateTime("2022-11-16T05:00:00-05:00");
-    public static DateTime dt6 = new DateTime("2022-11-16T06:00:00-05:00");
-    public static DateTime dt7 = new DateTime("2022-11-16T07:00:00-05:00");
-    public static DateTime dt8 = new DateTime("2022-11-16T08:00:00-05:00");
-    public static DateTime dt9 = new DateTime("2022-11-16T09:00:00-05:00");
-    public static DateTime dt10 = new DateTime("2022-11-16T10:00:00-05:00");
-    public static DateTime dt11 = new DateTime("2022-11-16T11:00:00-05:00");
-    public static DateTime dt12 = new DateTime("2022-11-16T12:00:00-05:00");
-    public static DateTime dt13 = new DateTime("2022-11-16T13:00:00-05:00");
-    public static DateTime dt14 = new DateTime("2022-11-16T14:00:00-05:00");
-    public static DateTime dt15 = new DateTime("2022-11-16T15:00:00-05:00");
-    public static DateTime dt16 = new DateTime("2022-11-16T16:00:00-05:00");
-    public static DateTime dt17 = new DateTime("2022-11-16T17:00:00-05:00");
-    public static DateTime dt18 = new DateTime("2022-11-16T18:00:00-05:00");
-    public static DateTime dt19 = new DateTime("2022-11-16T19:00:00-05:00");
-    public static DateTime dt20 = new DateTime("2022-11-16T20:00:00-05:00");
-    public static DateTime dt21 = new DateTime("2022-11-16T21:00:00-05:00");
-    public static DateTime dt22 = new DateTime("2022-11-16T22:00:00-05:00");
-    public static DateTime dt23 = new DateTime("2022-11-16T23:00:00-05:00");
-    public static DateTime dt24 = new DateTime("2022-11-17T00:00:00-05:00");
+    private static final long intervalDay = 24 * 60 * 60 * 1000;
 
     public static void sort(ArrayList<ChronosPair<DateTime, Boolean>> arr, int low, int high){
         //Recursive Quicksort. Hopefully not too memory intensive.
@@ -239,68 +215,20 @@ public class DetermineTimeTest{
     }
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
+        DateTime dayStart = new DateTime("2022-11-29T00:00:00-05:00");
+
+        long meetingLength = 7200000;
+
+        determineMeetingTime(meetingLength, dayStart);
+    }
+
+    public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart) throws IOException, GeneralSecurityException {
         //Gets calendar
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Calendar service =
                 new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
-
-        //making 3 fake users (Event.Creator)
-        /*
-        Event.Creator bob = new Event.Creator();
-        bob.setEmail("bob@gmail.com");
-
-
-        Event.Creator lucy = new Event.Creator();
-        lucy.setEmail("lucy@gmail.com");
-
-        Event.Creator paul = new Event.Creator();
-        paul.setEmail("paul@gmail.com");
-        paul.setDisplayName("Paul McCartney");
-
-        //making a bunch of fake events
-        Event morningSleep1 = new Event();
-        morningSleep1.setStart(new EventDateTime().setDateTime(dt0));
-        morningSleep1.setEnd(new EventDateTime().setDateTime(dt8));
-        morningSleep1.setCreator(bob);
-
-        Event morningSleep2 = new Event();
-        morningSleep2.setStart(new EventDateTime().setDateTime(dt0));
-        morningSleep2.setEnd(new EventDateTime().setDateTime(dt6));
-        morningSleep2.setCreator(lucy);
-
-        Event sleep3 = new Event();
-        sleep3.setStart(new EventDateTime().setDateTime(dt4));
-        sleep3.setEnd(new EventDateTime().setDateTime(dt14));
-        sleep3.setCreator(paul);
-
-        Event work1 = new Event();
-        work1.setStart(new EventDateTime().setDateTime(dt9));
-        work1.setEnd(new EventDateTime().setDateTime(dt17));
-        work1.setCreator(bob);
-
-        Event work2 = new Event();
-        work2.setStart(new EventDateTime().setDateTime(dt7));
-        work2.setEnd(new EventDateTime().setDateTime(dt15));
-        work2.setCreator(lucy);
-
-        Event work3 = new Event();
-        work3.setStart(new EventDateTime().setDateTime(dt18));
-        work3.setEnd(new EventDateTime().setDateTime(dt24));
-        work3.setCreator(paul);
-
-        Event nightSleep1 = new Event();
-        nightSleep1.setStart(new EventDateTime().setDateTime(dt23));
-        nightSleep1.setEnd(new EventDateTime().setDateTime(dt24));
-        nightSleep1.setCreator(bob);
-
-        Event nightSleep2 = new Event();
-        nightSleep2.setStart(new EventDateTime().setDateTime(dt21));
-        nightSleep2.setEnd(new EventDateTime().setDateTime(dt24));
-        nightSleep2.setCreator(lucy);
-
-         */
 
 
         createCalendar(service);
@@ -321,13 +249,18 @@ public class DetermineTimeTest{
 
 
 
-        DateTime dt = new DateTime("2022-11-21T00:00:00-05:00");
+//        DateTime dtMin = new DateTime("2022-11-29T00:00:00-05:00");
+//        DateTime dtMax = new DateTime("2022-11-30T00:00:00-05:00");
 
-        DateTime dayStart = new DateTime("2022-11-21T00:00:00-05:00");
-        DateTime dayEnd = new DateTime("2022-11-22T00:00:00-05:00");
+//        DateTime dayStart = new DateTime("2022-11-29T00:00:00-05:00");
+//        DateTime dayEnd = new DateTime("2022-11-30T00:00:00-05:00");
+
+        DateTime dayEnd = new DateTime(dayStart.getValue() + intervalDay);
+
         Events es = service.events().list(calendarId)
                 .setMaxResults(10)
-                .setTimeMin(dt)
+                .setTimeMin(dayStart)
+                .setTimeMax(dayEnd)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
@@ -387,7 +320,7 @@ public class DetermineTimeTest{
         }
 
         //now that we have list of intervals, we can acquire suitable meeting times!
-        long meetingLength = 7200000; //User tells us how long they want the meeting. I put 2 hours as a placeholder.
+        //long meetingLength = 7200000; //User tells us how long they want the meeting. I put 2 hours as a placeholder.
         long startIterator = 1800000; //Suggested meeting times iterate by this val, currently 30 minutes.
         int threshold = 0; //# of concurrent events we're willing to overlap. Increases until we can fit the full length meeting
         boolean meetingDoesntFit = true; //ends loop when meeting does fit
@@ -457,9 +390,13 @@ public class DetermineTimeTest{
             }
             System.out.print("\n");
         }
+
+        return potentialMeetings;
         //================================================================
         //                ~:THINGS THAT BREAK MY BOY:~
         //================================================================
+        // 1) Events that start before the day and/or end after it's done -- fixed
+        // 2) Making a meeting length that's longer than a day            -- fixed
         // 3) Other things probably
         //
     }
