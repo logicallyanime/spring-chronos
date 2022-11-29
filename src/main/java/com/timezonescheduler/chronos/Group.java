@@ -5,14 +5,22 @@ import com.google.api.services.calendar.model.Event;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.ArrayList;
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class Group {
-    private String _id;
+    private String id;
     private String name;
+    @DBRef
     private ArrayList<User> userList = new ArrayList<User>();
     private ArrayList<Event> eventList = new ArrayList<>();
     private Event meeting = null;
+    @DBRef
     private User groupLeader;
 
     public Group (String name, User groupLeader) {

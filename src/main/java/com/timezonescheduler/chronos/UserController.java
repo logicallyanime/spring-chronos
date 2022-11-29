@@ -26,9 +26,9 @@ public class UserController {
         return userService.getUsers();
     }
 
-    @GetMapping("{userId}")
-    public Optional<User> getUser(@PathVariable("userId") String userId) {
-        return userService.getUser(userId);
+    @GetMapping
+    public Optional<User> getUser(@RequestBody User userId) {
+        return userService.getUser(userId.getId());
     }
 
     @PostMapping
@@ -36,15 +36,16 @@ public class UserController {
         userService.addNewUser(user);
     }
 
-    @PostMapping("contact/{newName}")
-    public void addContactAsUser(@PathVariable("newName") String newName) throws GeneralSecurityException, IOException {
+    @PostMapping
+    public void addContactAsUser(@RequestBody User name) throws GeneralSecurityException, IOException {
+        String newName = name.getName();
         String n1 = String.valueOf(newName.subSequence(1, newName.length() - 1));
         userService.addContact(n1);
     }
 
-    @DeleteMapping("{userId}")
-    public void removeUser(@PathVariable("userId") String userId) {
-        userService.removeUser(userId);
+    @DeleteMapping
+    public void removeUser(@RequestBody User userId) {
+        userService.removeUser(userId.getId());
     }
 
     /*
@@ -58,11 +59,10 @@ public class UserController {
 
      */
 
-    @PatchMapping("/update/{userId}")
+    @PatchMapping("/update")
     public void patchResource(
-            @PathVariable String userId,
-            @RequestBody User newUser)
+            @RequestBody User userid, User newUser)
     {
-        userService.patchResource(userId, newUser);
+        userService.patchResource(userid.getId(), newUser);
     }
 }

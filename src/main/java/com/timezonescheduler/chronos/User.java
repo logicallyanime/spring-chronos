@@ -1,5 +1,7 @@
 package com.timezonescheduler.chronos;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,8 +11,11 @@ import java.util.ArrayList;
 
 @Data
 @Document
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class User {
-    private String _id;
+    private String id;
     private String name;
     private String email;
     private double timezone; //UTC -12 =< t >= +14
@@ -76,4 +81,17 @@ public class User {
             }
         }
     }
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
+    }
+    public void addGroup(Group group) {
+        this.groups.add(group);
+    }
+
+
+
 }
