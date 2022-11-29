@@ -40,7 +40,7 @@ public class Group {
     public void addUser (User addedUser) {
         for(User u : userList){
             if(addedUser.getEmail().equals(u.getEmail())){
-                throw new IllegalStateException("Group with id " + _id + " already has user with email " + addedUser.getEmail());
+                throw new IllegalStateException("Group with id " + id + " already has user with email " + addedUser.getEmail());
             }
         }
         userList.add(addedUser);
@@ -109,7 +109,7 @@ public class Group {
         }
     }
     public String getId(){
-        return _id;
+        return id;
     }
 
     public ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart) throws GeneralSecurityException, IOException {

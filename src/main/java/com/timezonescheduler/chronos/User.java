@@ -2,6 +2,7 @@ package com.timezonescheduler.chronos;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.google.api.services.calendar.Calendar;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -87,9 +88,6 @@ public class User {
 
     public void setGroups(ArrayList<Group> groups) {
         this.groups = groups;
-    }
-    public void addGroup(Group group) {
-        this.groups.add(group);
     }
 
 
