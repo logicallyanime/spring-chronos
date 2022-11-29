@@ -42,8 +42,10 @@ public class GroupController {
     public void updateGroup(
             @PathVariable("groupId") String groupId,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) ArrayList<User> userList) {
-        groupService.updateGroup(groupId, name, userList);
+            @RequestParam(required = false) ArrayList<User> userList,
+            @RequestParam(required = false) Event meeting,
+            @RequestParam(required = false) ArrayList<Event> eventList) {
+        groupService.updateGroup(groupId, name, userList, meeting, eventList);
     }
 
     @PatchMapping(path = "adduser/{groupId}")
@@ -61,4 +63,17 @@ public class GroupController {
     ){
         groupService.removeUserFromGroup(groupId, user);
     }
+
+    @PatchMapping(path = "addusercal/{groupId}")
+    public void addUserCalendar(
+            @PathVariable("groupId") String groupId,
+            @RequestParam ArrayList<Event> eventList
+    ){
+        groupService.addUserCalendar(groupId, eventList);
+    }
+
+    //user clicks add from GCal button
+    //user is taken to OAuth
+    //grab events right there
+    //THEN call addUserCalendar
 }

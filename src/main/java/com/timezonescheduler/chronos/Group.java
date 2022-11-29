@@ -6,7 +6,8 @@ public class Group {
     private String _id;
     private String name;
     private ArrayList<User> userList = new ArrayList<User>();
-    private String meeting = null;
+    private ArrayList<Event> eventList = new ArrayList<>();
+    private Event meeting = null;
     private User groupLeader;
 
     public Group (String name, User groupLeader) {
@@ -52,18 +53,48 @@ public class Group {
         userList = newUserList;
     }
 
-    public void addMeeting (String date) {
-        meeting = date;
-    }
-
     public void removeMeeting () {
         meeting = null;
+    }
+
+    public Event getMeeting(){
+        return meeting;
     }
 
     public User getGroupLeader(){
         return groupLeader;
     }
 
+    public void setMeeting(Event m){
+        meeting = m;
+    }
+
+    public ArrayList<Event> getEventList(){
+        return eventList;
+    }
+
+    public void setEventList(ArrayList<Event> el){
+        eventList = el;
+    }
+
+    public void addEvents(ArrayList<Event> events){
+        for(Event e : events){
+            addEvent(e);
+        }
+    }
+
+    public void addEvent(Event e){
+        boolean unique = true;
+        for(Event ev : eventList){
+            if(ev.equals(e)){
+                unique = false;
+                break;
+            }
+        }
+        if(unique){
+            eventList.add(e);
+        }
+    }
     public String getId(){
         return _id;
     }

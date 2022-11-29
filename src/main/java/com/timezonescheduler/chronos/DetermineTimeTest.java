@@ -219,60 +219,39 @@ public class DetermineTimeTest{
 
         long meetingLength = 7200000;
 
-        determineMeetingTime(meetingLength, dayStart);
+        //determineMeetingTime(meetingLength, dayStart);
     }
 
-    public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart) throws IOException, GeneralSecurityException {
-        //Gets calendar
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service =
-                new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                        .setApplicationName(APPLICATION_NAME)
-                        .build();
-
-
-        createCalendar(service);
-
-
-        String calendarSummary = "chronosTest2";
-        String calendarId = "";
-        CalendarList calendarList = service.calendarList().list().execute();
-        List<CalendarListEntry> items = calendarList.getItems();
-
-        for (CalendarListEntry calendarListEntry : items) {
-            if (Objects.equals(calendarListEntry.getSummary(), calendarSummary)) {
-                calendarId = calendarListEntry.getId();
-            }
-        }
-
-        ArrayList<Event> events = new ArrayList();
-
-
-
-//        DateTime dtMin = new DateTime("2022-11-29T00:00:00-05:00");
-//        DateTime dtMax = new DateTime("2022-11-30T00:00:00-05:00");
-
-//        DateTime dayStart = new DateTime("2022-11-29T00:00:00-05:00");
-//        DateTime dayEnd = new DateTime("2022-11-30T00:00:00-05:00");
-
+    public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart, ArrayList<Event> events) throws IOException, GeneralSecurityException {
         DateTime dayEnd = new DateTime(dayStart.getValue() + intervalDay);
-
-        Events es = service.events().list(calendarId)
-                .setMaxResults(10)
-                .setTimeMin(dayStart)
-                .setTimeMax(dayEnd)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-        events.addAll(es.getItems());
 
         //create list of times when events start or end
         ArrayList<ChronosPair<DateTime, Boolean>> timesList = new ArrayList();
         timesList.add(new ChronosPair<>(dayStart, Boolean.TRUE));
         timesList.add(new ChronosPair<>(dayStart, Boolean.FALSE));
         for(Event e : events){
-            timesList.add(new ChronosPair(e.getStart().getDateTime(), Boolean.TRUE));
-            timesList.add(new ChronosPair(e.getEnd().getDateTime(), Boolean.FALSE));
+            if(e.getEnd().getDateTime().getValue() <= dayStart.getValue()){
+                //entirely before time of interest
+                continue;
+            }
+            if(e.getStart().getDateTime().getValue() >= dayEnd.getValue()){
+                //entirely after time of interest
+                continue;
+            }
+            if(e.getStart().getDateTime().getValue() < dayStart.getValue()){
+                //partially before time of interest; chop off part before dayStart
+                timesList.add(new ChronosPair(dayStart, Boolean.TRUE));
+            }else {
+                //start within day
+                timesList.add(new ChronosPair(e.getStart().getDateTime(), Boolean.TRUE));
+            }
+            if(e.getEnd().getDateTime().getValue() > dayEnd.getValue()){
+                //partially after time of interest; chop off part after dayEnd
+                timesList.add(new ChronosPair(dayEnd, Boolean.FALSE));
+            }else {
+                //end within day
+                timesList.add(new ChronosPair(e.getEnd().getDateTime(), Boolean.FALSE));
+            }
         }
         timesList.add(new ChronosPair<>(dayEnd, Boolean.TRUE));
         timesList.add(new ChronosPair<>(dayEnd, Boolean.FALSE));

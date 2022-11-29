@@ -45,7 +45,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void updateGroup(String groupId, String name, ArrayList<User> userList){
+    public void updateGroup(String groupId, String name, ArrayList<User> userList, Event meeting, ArrayList<Event> eventList){
         Group group = groupRepo.findById(groupId).orElseThrow(() -> new IllegalStateException(
                 "group with id " + groupId + " does not exist."));
         boolean changed = false;
@@ -61,6 +61,14 @@ public class GroupService {
             group.setUserList(userList);
             changed = true;
         }
+        if(meeting != null && !Objects.equals(group.getMeeting(), meeting)){
+            group.setMeeting(meeting);
+            changed = true;
+        }
+        if(eventList != null && !Objects.equals(group.getEventList(), eventList)){
+            group.setEventList(eventList);
+            changed = true;
+        }
         if(changed) {
             groupRepo.save(group);
         }
@@ -70,7 +78,7 @@ public class GroupService {
         Group group = getGroup(groupId).get();
         group.addUser(user);
         user.addGroup(group);
-        updateGroup(groupId, group.getName(), group.getUserList());
+        updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
     }
 
     public void removeUserFromGroup(String groupId, User user) {
@@ -80,6 +88,12 @@ public class GroupService {
             removeGroup(groupId);
         }
         user.removeGroup(group);
-        updateGroup(groupId, group.getName(), group.getUserList());
+        updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
+    }
+
+    public void addUserCalendar(String groupId, ArrayList<Event> eventList){
+        Group group = getGroup(groupId).get();
+        group.addEvents(eventList);
+        updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
     }
 }
