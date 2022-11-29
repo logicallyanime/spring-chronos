@@ -1,5 +1,6 @@
 package com.timezonescheduler.chronos;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -73,8 +74,21 @@ public class GroupController {
         groupService.addUserCalendar(groupId, eventList);
     }
 
-    //user clicks add from GCal button
-    //user is taken to OAuth
-    //grab events right there
-    //THEN call addUserCalendar
+    @RequestMapping(path = "dtm/{groupId)")
+    public ArrayList<ChronosPair<Event, String>> determineMeetingTime(
+            @PathVariable("groupId") String groupId,
+            @RequestParam String email,
+            @RequestParam long meetingTime,
+            @RequestParam DateTime date
+            ){
+        return groupService.determineMeetingTime(groupId, email, meetingTime, date);
+    }
+
+    @PatchMapping(path = "meeting/{groupId}")
+    public void setMeeting(
+            @PathVariable("groupId") String groupId,
+            @RequestParam Event meeting
+    ){
+        groupService.setMeeting(groupId, meeting);
+    }
 }

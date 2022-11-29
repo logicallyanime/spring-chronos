@@ -1,5 +1,6 @@
 package com.timezonescheduler.chronos;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,5 +97,28 @@ public class GroupService {
         Group group = getGroup(groupId).get();
         group.addEvents(eventList);
         updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
+    }
+
+    public ArrayList<ChronosPair<Event, String>> determineMeetingTime(String groupId, String email, long meetingTime, DateTime start){
+        Group group = getGroup(groupId).get();
+        if(group.getGroupLeader().getEmail().equals(email)) {
+            ArrayList<ChronosPair<Event, String>> meetings = new ArrayList<>();
+            try {
+                meetings = group.determineMeetingTime(meetingTime, start);
+            }catch(Exception e){
+                System.err.println("Exception when calling Determine Meeting Time function");
+                return null;
+            }
+            return meetings;
+        }else{
+            System.err.println("User does not have access to this function");
+            return null;
+        }
+    }
+
+    public void setMeeting(String groupId, Event meeting){
+        Group group = getGroup(groupId).get();
+        group.setMeeting(meeting);
+        updateGroup(group.getId(), group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
     }
 }
