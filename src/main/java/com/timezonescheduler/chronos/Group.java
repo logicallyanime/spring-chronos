@@ -1,5 +1,10 @@
 package com.timezonescheduler.chronos;
 
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
 public class Group {
@@ -99,9 +104,7 @@ public class Group {
         return _id;
     }
 
-    //Need to figure out
-    /*
-    public void addMeetingToCalendar () {
+    public ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart) throws GeneralSecurityException, IOException {
+        return DetermineTimeTest.determineMeetingTime(meetingLength, dayStart, eventList);
     }
-     */
 }

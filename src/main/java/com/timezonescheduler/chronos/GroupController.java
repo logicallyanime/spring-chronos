@@ -1,5 +1,6 @@
 package com.timezonescheduler.chronos;
 
+import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
