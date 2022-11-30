@@ -18,6 +18,7 @@ import com.google.api.services.calendar.model.*;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.people.v1.PeopleServiceScopes;
+import com.timezonescheduler.chronos.application.test.CalendarQuickStart;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,38 +27,6 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
-import static com.timezonescheduler.chronos.CalendarQuickStart.*;
-
-
-//Simple tuple classes cause I don't want to deal with more dependencies
-class ChronosPair<K, V>{
-    public K key;
-    public V val;
-
-    ChronosPair(K k, V v){
-        key = k;
-        val = v;
-    }
-
-    void setK(K k){key = k;}
-    void setV(V v){val = v;}
-}
-
-class ChronosTriplet<K, X, Y>{
-    public K key;
-    public X val1;
-    public Y val2;
-
-    ChronosTriplet(K k, X x, Y y){
-        key = k;
-        val1 = x;
-        val2 = y;
-    }
-
-    void setK(K k){key = k;}
-    void setX(X x){val1 = x;}
-    void setY(Y y){val2 = y;}
-}
 
 public class DetermineTimeTest{
 

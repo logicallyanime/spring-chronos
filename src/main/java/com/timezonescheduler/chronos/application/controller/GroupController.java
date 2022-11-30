@@ -1,5 +1,6 @@
-package com.timezonescheduler.chronos;
+package com.timezonescheduler.chronos.application.controller;
 
+import com.timezonescheduler.chronos.ChronosPair;
 import com.timezonescheduler.chronos.application.service.GroupService;
 import com.timezonescheduler.chronos.application.model.Group;
 import com.timezonescheduler.chronos.application.model.User;
@@ -72,12 +73,12 @@ public class GroupController {
     @PatchMapping(path = "addusercal/{groupId}")
     public void addUserCalendar(
             @PathVariable("groupId") String groupId,
-            @RequestParam ArrayList<Event> eventList
+            @RequestBody ArrayList<Event> eventList
     ){
         groupService.addUserCalendar(groupId, eventList);
     }
 
-    @RequestMapping(path = "dtm/{groupId)")
+    @RequestMapping(path = "dtm/{groupId}")
     public ArrayList<ChronosPair<Event, String>> determineMeetingTime(
             @PathVariable("groupId") String groupId,
             @RequestParam String email,

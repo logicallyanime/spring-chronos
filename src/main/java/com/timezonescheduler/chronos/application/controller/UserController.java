@@ -1,16 +1,18 @@
 package com.timezonescheduler.chronos.application.controller;
 
 //import com.github.fge.jsonpatch.JsonPatch;
+import com.google.gson.JsonObject;
+import com.timezonescheduler.chronos.application.model.User;
 import com.timezonescheduler.chronos.application.security.CurrentUser;
 import com.timezonescheduler.chronos.application.security.UserPrincipal;
 import com.timezonescheduler.chronos.application.security.oauth.exception.ResourceNotFoundException;
 import com.timezonescheduler.chronos.application.service.UserService;
-import com.timezonescheduler.chronos.application.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,33 +27,32 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getUsers(){
         return userService.getUsers();
     }
 
-    @GetMapping("{userId}")
-    public Optional<User> getUser(@PathVariable("userId") String userId) {
-        return userService.getUser(userId);
+    @GetMapping
+    public Optional<User> getUser(@RequestBody User userId) {
+        return userService.getUser(userId.getId());
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public void registerNewUser(@RequestBody User user) {
         userService.addNewUser(user);
     }
 
-    @DeleteMapping("{userId}")
-    public void removeUser(@PathVariable("userId") String userId) {
-        userService.removeUser(userId);
+    @PostMapping("/addContact")
+    public void addContactAsUser(@RequestBody User name) throws GeneralSecurityException, IOException {
+        String newName = name.getName();
+        String n1 = String.valueOf(newName.subSequence(1, newName.length() - 1));
+        userService.addContact(n1);
     }
 
-//    @PatchMapping(value ="{userId}")
-//    public void updateUser(
-//            @PathVariable("userId") String userId,
-//            @RequestBody(required = false) JsonPatch user)
-//    {
-//        userService.updateUser(userId, user);
-//    }
+    @DeleteMapping
+    public void removeUser(@RequestBody User userId) {
+        userService.removeUser(userId.getId());
+    }
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
@@ -59,18 +60,22 @@ public class UserController {
         return userService.getUser(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
-    @GetMapping("/email")
-    @PermitAll
-    public User getUserByEmail(@PathVariable("email") String email) {
-        return userService.getUserByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
+
+    /*
+    @PatchMapping(value ="{userId}")
+    public void updateUser(
+            @PathVariable("userId") String userId,
+            @RequestBody(required = false) JsonPatch user)
+    {
+        userService.updateUser(userId, user);
     }
 
-    @PatchMapping("/update/{userId}")
+     */
+
+    @PatchMapping("/update")
     public void patchResource(
-            @PathVariable String userId,
-            @RequestBody User newUser)
+            @RequestBody User userid, User newUser)
     {
-        userService.patchResource(userId, newUser);
+        userService.patchResource(userid.getId(), newUser);
     }
 }

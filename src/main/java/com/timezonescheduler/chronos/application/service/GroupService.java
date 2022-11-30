@@ -1,7 +1,8 @@
-package com.timezonescheduler.chronos;
+package com.timezonescheduler.chronos.application.service;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
+import com.timezonescheduler.chronos.ChronosPair;
 import com.timezonescheduler.chronos.application.model.Group;
 import com.timezonescheduler.chronos.application.model.User;
 import com.timezonescheduler.chronos.application.repo.GroupRepo;

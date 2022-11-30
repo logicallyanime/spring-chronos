@@ -1,9 +1,8 @@
-package com.timezonescheduler.chronos;
+package com.timezonescheduler.chronos.application.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.Calendar;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -111,7 +110,7 @@ public class User {
     }
 
     public String getId() {
-        return this._id;
+        return this.id;
     }
 
     public String getPassword() {
