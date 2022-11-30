@@ -1,11 +1,11 @@
-package com.timezonescheduler.chronos;
+package com.timezonescheduler.chronos.application.util;
 
 public class ChronosTriplet<K, X, Y> {
     public K key;
     public X val1;
     public Y val2;
 
-    ChronosTriplet(K k, X x, Y y) {
+    public ChronosTriplet(K k, X x, Y y) {
         key = k;
         val1 = x;
         val2 = y;

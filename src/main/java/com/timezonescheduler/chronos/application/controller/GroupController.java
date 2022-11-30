@@ -1,6 +1,6 @@
 package com.timezonescheduler.chronos.application.controller;
 
-import com.timezonescheduler.chronos.ChronosPair;
+import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.service.GroupService;
 import com.timezonescheduler.chronos.application.model.Group;
 import com.timezonescheduler.chronos.application.model.User;

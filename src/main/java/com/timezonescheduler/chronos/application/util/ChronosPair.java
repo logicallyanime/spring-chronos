@@ -1,11 +1,11 @@
-package com.timezonescheduler.chronos;
+package com.timezonescheduler.chronos.application.util;
 
 //Simple tuple classes cause I don't want to deal with more dependencies
 public class ChronosPair<K, V> {
     public K key;
     public V val;
 
-    ChronosPair(K k, V v) {
+    public ChronosPair(K k, V v) {
         key = k;
         val = v;
     }

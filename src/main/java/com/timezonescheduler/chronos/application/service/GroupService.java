@@ -2,13 +2,12 @@ package com.timezonescheduler.chronos.application.service;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
-import com.timezonescheduler.chronos.ChronosPair;
+import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.model.Group;
 import com.timezonescheduler.chronos.application.model.User;
 import com.timezonescheduler.chronos.application.repo.GroupRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.jdo.annotations.Transactional;
 import java.util.ArrayList;
