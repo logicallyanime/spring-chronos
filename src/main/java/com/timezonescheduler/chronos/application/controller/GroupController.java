@@ -1,5 +1,6 @@
 package com.timezonescheduler.chronos.application.controller;
 
+import com.timezonescheduler.chronos.application.service.UserService;
 import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.service.GroupService;
 import com.timezonescheduler.chronos.application.model.Group;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class GroupController {
 
     private final GroupService groupService;
+    private final UserService userService;
 
     @Autowired
-    public GroupController(GroupService groupService){
+    public GroupController(GroupService groupService, UserService userService){
         this.groupService = groupService;
+        this.userService = userService;
     }
 
     @RequestMapping("get/{groupId}")
@@ -29,9 +32,11 @@ public class GroupController {
         return groupService.getGroup(groupId);
     }
 
-    @GetMapping
-    public List<Group> getGroups(){
-        return groupService.getGroups();
+    @GetMapping({"{userid}"})
+    public ArrayList<Group> getGroups(@PathVariable String userid){
+
+        User user = userService.getUser(userid).orElseThrow(RuntimeException::new);
+        return user.getGroups();
     }
 
     @PostMapping
@@ -60,6 +65,10 @@ public class GroupController {
             @RequestBody User user
     ){
         groupService.addUserToGroup(groupId, user);
+
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        user.addGroup(group);
+        userService.patchResource(user.getId(), user);
     }
 
     @PatchMapping(path = "removeuser/{groupId}")
@@ -68,6 +77,9 @@ public class GroupController {
             @RequestBody User user
     ){
         groupService.removeUserFromGroup(groupId, user);
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        user.removeGroup(group);
+        userService.patchResource(user.getId(), user);
     }
 
     @PatchMapping(path = "addusercal/{groupId}")
