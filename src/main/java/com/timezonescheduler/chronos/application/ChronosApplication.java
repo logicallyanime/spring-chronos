@@ -1,11 +1,10 @@
 package com.timezonescheduler.chronos.application;
 
-import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.page.AppShellConfigurator;
-import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
+import com.timezonescheduler.chronos.application.security.AppProperties;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * The entry point of the Spring Boot application.
@@ -15,11 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-@Theme(value = "chronos")
-@PWA(name = "Chronos", shortName = "Chronos", offlineResources = {})
-@NpmPackage(value = "line-awesome", version = "1.3.0")
-@NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
-public class ChronosApplication implements AppShellConfigurator {
+@EnableConfigurationProperties(AppProperties.class)
+public class ChronosApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(ChronosApplication.class, args);

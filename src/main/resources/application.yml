@@ -1,0 +1,40 @@
+server:
+  port: ${PORT:8080}
+logging:
+  level:
+    org:
+      atmosphere: warn
+spring:
+  mustache:
+    check-template-location: false
+  data:
+    mongodb:
+      authentication-database: admin
+      username: rootuser
+      password: rootpass
+      database: chronos
+      port: 27017
+      host: localhost
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1016259664713-f7sedlkiqv1260idlrb4c4a0i95hi1fl.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+#              - calendar
+#              - contacts
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+app:
+  auth:
+    tokenSecret: ea09bef50270cfc9c9c3d940414a7a5686bdbd41b81cc79871af19601a77d54a76a9c610146d011d0a937b6e5b73a8e32eb5f10b0fb2e561ac7b8abe0e307e28
+    tokenExpirationMsec: 864000000
+  cors:
+    allowedOrigins: http://localhost:8080, http://localhost:3000
+  oauth2:
+    authorizedRedirectUris:
+      - http://localhost:8080/oauth2/redirect
+      - http://localhost:3000/oauth2/redirect
