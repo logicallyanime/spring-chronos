@@ -307,7 +307,7 @@ public class MeetingService {
     }
 
 
-    public static void readEvents () throws IOException {
+    public static ArrayList<Event> readEvents () throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
 
         String calendarSummary = "chronosTest";
@@ -322,38 +322,37 @@ public class MeetingService {
         }
 
 
-        Events events = calendarService.events().list(calendarId)
-                .setMaxResults(10)
-                .setTimeMin(now)
+        Events events = calendarService.events().list("primary")
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
-        List<com.google.api.services.calendar.model.Event> items = events.getItems();
-        if (items.isEmpty()) {
-            System.out.println("No upcoming events found.");
-        } else {
-            System.out.println("Upcoming events");
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                List<EventAttendee> attendees = event.getAttendees();
-                String creatorEmail = event.getCreator().getEmail();
-
-                System.out.println("The creator is: " + creatorEmail);
-
-                if (start == null) {
-                    start = event.getStart().getDate();
-                }
-                System.out.printf("%s (%s)\n", event.getSummary(), start);
-                if (attendees != null) {
-                    for (EventAttendee attendee : attendees) {
-                        String attendeeEmail = attendee.getEmail();
-                        System.out.println("The attendees are: " + attendeeEmail);
-                    }
-                } else {
-                    System.out.println("There are no attendees for the above event");
-                }
-            }
-        }
+        ArrayList<com.google.api.services.calendar.model.Event> items = (ArrayList<Event>) events.getItems();
+//        if (items.isEmpty()) {
+//            System.out.println("No upcoming events found.");
+//        } else {
+//            System.out.println("Upcoming events");
+//            for (Event event : items) {
+//                DateTime start = event.getStart().getDateTime();
+//                List<EventAttendee> attendees = event.getAttendees();
+//                String creatorEmail = event.getCreator().getEmail();
+//
+//                System.out.println("The creator is: " + creatorEmail);
+//
+//                if (start == null) {
+//                    start = event.getStart().getDate();
+//                }
+////                System.out.printf("%s (%s)\n", event.getSummary(), start);
+////                if (attendees != null) {
+////                    for (EventAttendee attendee : attendees) {
+////                        String attendeeEmail = attendee.getEmail();
+////                        System.out.println("The attendees are: " + attendeeEmail);
+////                    }
+////                } else {
+////                    System.out.println("There are no attendees for the above event");
+////                }
+//            }
+//        }
+        return items;
     }
     //Ends the Google Calendar Functions
 

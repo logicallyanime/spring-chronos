@@ -17,6 +17,7 @@ import com.google.api.services.calendar.model.*;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.people.v1.PeopleServiceScopes;
+import com.timezonescheduler.chronos.application.service.MeetingService;
 import com.timezonescheduler.chronos.application.test.CalendarQuickStart;
 import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.util.ChronosTriplet;
@@ -185,11 +186,14 @@ public class DetermineTimeTest{
     }
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
-        DateTime dayStart = new DateTime("2022-11-29T00:00:00-05:00");
+        DateTime dayStart = new DateTime("2022-11-30T00:00:00-05:00");
 
         long meetingLength = 7200000;
 
-        //determineMeetingTime(meetingLength, dayStart);
+        MeetingService ms = new MeetingService();
+
+        ArrayList<Event> events = ms.readEvents();
+        determineMeetingTime(meetingLength, dayStart, events);
     }
 
     public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart, ArrayList<Event> events) throws IOException, GeneralSecurityException {

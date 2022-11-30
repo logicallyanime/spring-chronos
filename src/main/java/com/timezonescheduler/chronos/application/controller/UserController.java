@@ -74,8 +74,8 @@ public class UserController {
 
     @PatchMapping("/update")
     public void patchResource(
-            @RequestBody User userid, User newUser)
+            @RequestBody User user)
     {
-        userService.patchResource(userid.getId(), newUser);
+        userService.patchResource(user.getId(), user);
     }
 }

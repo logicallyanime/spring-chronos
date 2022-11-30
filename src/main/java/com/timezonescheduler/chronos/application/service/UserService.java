@@ -193,6 +193,11 @@ public class UserService {
             needUpdate = true;
         }
 
+        if (newUser.getTimezone() != saveUser.getTimezone()){
+            saveUser.setTimezone(newUser.getTimezone());
+            needUpdate = true;
+        }
+
         if (needUpdate) {
             userRepo.save(saveUser);
         }
