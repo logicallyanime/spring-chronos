@@ -87,7 +87,7 @@ public class GroupService {
     public void addUserToGroup(String groupId, User user) {
         Group group = getGroup(groupId).get();
         group.addUser(user);
-        user.addGroup(group);
+        //user.addGroup(group);
         updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
     }
 

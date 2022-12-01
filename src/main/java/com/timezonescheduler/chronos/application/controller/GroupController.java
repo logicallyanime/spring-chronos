@@ -39,6 +39,15 @@ public class GroupController {
         return user.getGroups();
     }
 
+    @PostMapping("/create/{userid}")
+    public void createGroup(@PathVariable String userid) {
+        User gLUser = userService.getUser(userid).orElseThrow(RuntimeException::new);
+        Group newGroup = new Group(gLUser.getName() + "'s Group", gLUser);
+        addGroup(newGroup);
+        gLUser.addGroup(newGroup);
+        userService.patchResource(userid, gLUser);
+    }
+
     @PostMapping
     public void addGroup(@RequestBody Group group){
         groupService.addGroup(group);
