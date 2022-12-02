@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface GroupRepo extends MongoRepository<Group, String> {
     Optional<Group[]> findAllByUserListContains(User user);
+
+    boolean existsById(String id);
 }

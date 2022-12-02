@@ -41,7 +41,7 @@ public class GroupService {
     public Optional<Group> getGroup(String groupId) {
         boolean exists = groupRepo.existsById(groupId);
         if (!exists) {
-            throw new IllegalStateException("user with id " + groupId + " does not exist");
+            throw new IllegalStateException("group with id " + groupId + " does not exist");
         }
         return groupRepo.findById(groupId);
     }

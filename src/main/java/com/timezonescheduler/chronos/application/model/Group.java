@@ -10,11 +10,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.DetermineTimeTest;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+@Document
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "name")
+        property = "id")
 public class Group {
     private String id;
     private String name;

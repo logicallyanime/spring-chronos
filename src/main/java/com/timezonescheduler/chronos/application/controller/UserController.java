@@ -32,6 +32,11 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @GetMapping("/getUserByEmail")
+    public User getUserByEmail(@RequestParam String userEmail) {
+        return userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
+    }
+
     @GetMapping
     public Optional<User> getUser(@RequestBody User userId) {
         return userService.getUser(userId.getId());
@@ -75,8 +80,8 @@ public class UserController {
 
     @PatchMapping("/update")
     public void patchResource(
-            @RequestBody User userid, User newUser)
+            @RequestBody User user)
     {
-        userService.patchResource(userid.getId(), newUser);
+        userService.patchResource(user.getId(), user);
     }
 }

@@ -194,15 +194,15 @@ public class UserService {
             needUpdate = true;
         }
         if (newUser != null || !newUser.getGroups().isEmpty()) {
-            saveUser.setEmail(newUser.getEmail());
+            saveUser.setGroups(newUser.getGroups());
             needUpdate = true;
         }
         if (newUser.getCalendar() != null) {
-            saveUser.setEmail(newUser.getEmail());
+            saveUser.setCalendar(newUser.getCalendar());
             needUpdate = true;
         }
         if (newUser.getTimezone() != saveUser.getTimezone()) {
-            saveUser.setEmail(newUser.getEmail());
+            saveUser.setTimezone(newUser.getTimezone());
             needUpdate = true;
         }
 
