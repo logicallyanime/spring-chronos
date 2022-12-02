@@ -197,6 +197,8 @@ public class DetermineTimeTest{
     }
 
     public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart, ArrayList<Event> events) throws IOException, GeneralSecurityException {
+        System.out.println(meetingLength + "\n" + dayStart + "\n" + events + "\n");
+
         DateTime dayEnd = new DateTime(dayStart.getValue() + intervalDay);
 
         //create list of times when events start or end

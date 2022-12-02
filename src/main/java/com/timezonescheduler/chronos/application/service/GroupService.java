@@ -117,6 +117,7 @@ public class GroupService {
                 System.err.println("Exception when calling Determine Meeting Time function");
                 return null;
             }
+            System.out.println("Check 2");
             return meetings;
         }else{
             System.err.println("User does not have access to this function");

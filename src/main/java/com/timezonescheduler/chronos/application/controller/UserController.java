@@ -1,7 +1,6 @@
 package com.timezonescheduler.chronos.application.controller;
 
 //import com.github.fge.jsonpatch.JsonPatch;
-import com.google.gson.JsonObject;
 import com.timezonescheduler.chronos.application.model.User;
 import com.timezonescheduler.chronos.application.security.CurrentUser;
 import com.timezonescheduler.chronos.application.security.UserPrincipal;
@@ -35,6 +34,27 @@ public class UserController {
     @GetMapping
     public Optional<User> getUser(@RequestBody User userId) {
         return userService.getUser(userId.getId());
+    }
+
+    @GetMapping("/exists/{userId}")
+    public String userExists(@RequestParam String userEmail){
+        try{
+            userService.getUserByEmail(userEmail);
+            return userEmail;
+        }catch(Exception e){
+            return userEmail + "fail";
+        }
+    }
+
+    @GetMapping("/getUserByEmail/{userEmail}")
+    public User getUserByEmail(@PathVariable("userEmail") String userEmail) {
+        return userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
+    }
+
+    @GetMapping("/getuseridbyemail/{userId}")
+    public String getUserIdByEmail(@PathVariable("userId") String userEmail) {
+        User u = userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
+        return u.getId();
     }
 
     @PostMapping("/register")

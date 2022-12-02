@@ -10,6 +10,8 @@ import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +29,7 @@ public class GroupController {
         this.userService = userService;
     }
 
-    @RequestMapping("get/{groupId}")
+    @GetMapping("get/{groupId}")
     public Optional<Group> getGroup(@PathVariable("groupId") String groupId) {
         return groupService.getGroup(groupId);
     }
@@ -37,6 +39,23 @@ public class GroupController {
 
         User user = userService.getUser(userid).orElseThrow(RuntimeException::new);
         return user.getGroups();
+    }
+
+    @GetMapping("/getUserList/{groupId}")
+    public ArrayList<String> getUserList(@PathVariable("groupId") String groupId) {
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        ArrayList<User> list = group.getUserList();
+        ArrayList<String> emailList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            emailList.add(i,list.get(i).getEmail());
+        }
+        return emailList;
+    }
+
+    @GetMapping("/getgroupname/{groupId}")
+    public String getGroupName(@PathVariable("groupId") String groupId){
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        return group.getName();
     }
 
     @PostMapping("/create/{userid}")
@@ -99,14 +118,16 @@ public class GroupController {
         groupService.addUserCalendar(groupId, eventList);
     }
 
-    @RequestMapping(path = "dtm/{groupId}")
+    @PatchMapping(path = "dtm/{groupId}")
     public ArrayList<ChronosPair<Event, String>> determineMeetingTime(
             @PathVariable("groupId") String groupId,
             @RequestParam String email,
             @RequestParam long meetingTime,
-            @RequestParam DateTime date
+            @RequestParam String sDate
             ){
-        return groupService.determineMeetingTime(groupId, email, meetingTime, date);
+        System.out.println("Check 1");
+        //sDate = URLDecoder.decode(sDate, StandardCharsets.UTF_8);
+        return groupService.determineMeetingTime(groupId, email, meetingTime, new DateTime(sDate));
     }
 
     @PatchMapping(path = "meeting/{groupId}")
