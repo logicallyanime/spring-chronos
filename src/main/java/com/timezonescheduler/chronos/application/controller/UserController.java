@@ -51,11 +51,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getUserByEmail/{userEmail}")
-    public User getUserByEmail(@PathVariable("userEmail") String userEmail) {
-        return userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
-    }
-
     @GetMapping("/getuseridbyemail/{userId}")
     public String getUserIdByEmail(@PathVariable("userId") String userEmail) {
         User u = userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
