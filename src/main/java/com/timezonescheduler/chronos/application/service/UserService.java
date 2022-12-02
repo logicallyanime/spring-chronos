@@ -183,12 +183,25 @@ public class UserService {
 
         boolean needUpdate = false;
 
+        //TODO Fix this
         if (StringUtils.hasLength(newUser.getName())) {
             saveUser.setName(newUser.getName());
             needUpdate = true;
         }
 
         if (StringUtils.hasLength(newUser.getEmail())) {
+            saveUser.setEmail(newUser.getEmail());
+            needUpdate = true;
+        }
+        if (newUser != null || !newUser.getGroups().isEmpty()) {
+            saveUser.setEmail(newUser.getEmail());
+            needUpdate = true;
+        }
+        if (newUser.getCalendar() != null) {
+            saveUser.setEmail(newUser.getEmail());
+            needUpdate = true;
+        }
+        if (newUser.getTimezone() != saveUser.getTimezone()) {
             saveUser.setEmail(newUser.getEmail());
             needUpdate = true;
         }

@@ -61,6 +61,7 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
 
+
     /*
     @PatchMapping(value ="{userId}")
     public void updateUser(

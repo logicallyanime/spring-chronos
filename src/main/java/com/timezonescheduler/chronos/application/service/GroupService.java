@@ -2,6 +2,7 @@ package com.timezonescheduler.chronos.application.service;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
+import com.timezonescheduler.chronos.application.repo.UserRepo;
 import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.model.Group;
 import com.timezonescheduler.chronos.application.model.User;
@@ -19,15 +20,19 @@ import java.util.Optional;
 public class GroupService {
 
     private final GroupRepo groupRepo;
+    private final UserService userService;
 
     @Autowired
-    public GroupService(GroupRepo groupRepo) {
+    public GroupService(GroupRepo groupRepo, UserService userService) {
+
         this.groupRepo = groupRepo;
+        this.userService = userService;
     }
 
-    public List<Group> getGroups(){
-        return groupRepo.findAll();
-    }
+//    public Group[] getGroups(String userid){
+//        userRepo.
+//        return groupRepo.findAllById(userid);
+//    }
 
     public void addGroup(Group group) {
         groupRepo.save(group);
@@ -82,7 +87,7 @@ public class GroupService {
     public void addUserToGroup(String groupId, User user) {
         Group group = getGroup(groupId).get();
         group.addUser(user);
-        user.addGroup(group);
+        //user.addGroup(group);
         updateGroup(groupId, group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
     }
 
