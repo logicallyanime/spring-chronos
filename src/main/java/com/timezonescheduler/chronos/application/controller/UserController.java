@@ -31,6 +31,11 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @GetMapping("/getUserByEmail")
+    public User getUserByEmail(@RequestParam String userEmail) {
+        return userService.getUserByEmail(userEmail).orElseThrow(RuntimeException::new);
+    }
+
     @GetMapping
     public Optional<User> getUser(@RequestBody User userId) {
         return userService.getUser(userId.getId());

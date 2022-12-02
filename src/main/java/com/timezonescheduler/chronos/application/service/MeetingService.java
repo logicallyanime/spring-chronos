@@ -25,7 +25,11 @@ import com.google.api.services.people.v1.PeopleServiceScopes;
 import com.google.api.services.people.v1.model.ListConnectionsResponse;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Person;
+import com.timezonescheduler.chronos.application.model.Group;
+import com.timezonescheduler.chronos.application.model.User;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
@@ -36,6 +40,7 @@ import java.util.*;
 
 import static javax.mail.Message.RecipientType.TO;
 
+@Service
 public class MeetingService {
 
     private static final String APPLICATION_NAME = "Meeting Service";
@@ -81,9 +86,13 @@ public class MeetingService {
 
     private static PeopleService peopleService;
 
+    private static GroupService groupService;
 
 
-    public MeetingService() throws IOException {
+    @Autowired
+    public MeetingService(GroupService groupService) throws IOException {
+
+        this.groupService = groupService;
 
         gmailService =
                 new Gmail.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
@@ -108,7 +117,7 @@ public class MeetingService {
     public static void main (String[] args) throws Exception {
 
 
-        new MeetingService();
+        //new MeetingService();
         //Test Send Email
         //createAndSendEmail();
 
@@ -135,8 +144,8 @@ public class MeetingService {
 //
 //        readEvents();
 
-        String newUserEmail = "pschmitt@oswego.edu";
-        addContact(newUserEmail);
+//        String newUserEmail = "pschmitt@oswego.edu";
+//        addContact(newUserEmail);
 
 
 
@@ -223,32 +232,43 @@ public class MeetingService {
         }
     }
 
-    public static void createEvent () throws IOException {
-        com.google.api.services.calendar.model.Event event = new com.google.api.services.calendar.model.Event()
-                .setSummary("Event Dummy")
-                .setLocation("Shineman 170")
-                .setDescription("Making a dummy event.");
+    public static void createEvent (String groupId) throws IOException {
 
-        DateTime startDateTime = new DateTime("2022-11-18T10:20:00-05:00");
-        EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
-                .setTimeZone("America/New_York");
-        event.setStart(start);
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        Event meetingEvent = group.getMeeting();
 
-        DateTime endDateTime = new DateTime("2022-11-18T11:15:00-05:00");
-        EventDateTime end = new EventDateTime()
-                .setDateTime(endDateTime)
-                .setTimeZone("America/New_York");
-        event.setEnd(end);
+        ArrayList<User> userArrayList = group.getUserList();
 
+//        com.google.api.services.calendar.model.Event event = new com.google.api.services.calendar.model.Event()
+//                .setSummary("Chronos Scheduled Meeting")
+//                .setLocation("Anywhere")
+//                .setDescription("Meeting Through Chronos Setup");
+//
+//        DateTime startDateTime = new DateTime("2022-11-18T10:20:00-05:00");
+//        EventDateTime start = new EventDateTime()
+//                .setDateTime(startDateTime)
+//                .setTimeZone("America/New_York");
+//        event.setStart(start);
+//
+//        DateTime endDateTime = new DateTime("2022-11-18T11:15:00-05:00");
+//        EventDateTime end = new EventDateTime()
+//                .setDateTime(endDateTime)
+//                .setTimeZone("America/New_York");
+//        event.setEnd(end);
+//
         String[] recurrence = new String[] {"RRULE:FREQ=DAILY;COUNT=1"};
-        event.setRecurrence(Arrays.asList(recurrence));
-
+        meetingEvent.setRecurrence(Arrays.asList(recurrence));
+//
         EventAttendee[] attendees = new EventAttendee[] {
                 new EventAttendee().setEmail("jengler2@oswego.edu"),
                 //new EventAttendee().setEmail("tvanalst@oswego.edu"),
         };
-        event.setAttendees(Arrays.asList(attendees));
+
+        for (int i = 0; i < userArrayList.size(); i++) {
+            EventAttendee eventAttendee = new EventAttendee().setEmail(userArrayList.get(i).getEmail());
+            attendees[i] = eventAttendee;
+        }
+        meetingEvent.setAttendees(Arrays.asList(attendees));
 
         EventReminder[] reminderOverrides = new EventReminder[] {
                 new EventReminder().setMethod("email").setMinutes(24 * 60),
@@ -257,7 +277,7 @@ public class MeetingService {
         com.google.api.services.calendar.model.Event.Reminders reminders = new com.google.api.services.calendar.model.Event.Reminders()
                 .setUseDefault(false)
                 .setOverrides(Arrays.asList(reminderOverrides));
-        event.setReminders(reminders);
+        meetingEvent.setReminders(reminders);
 
         String calendarSummary = "chronosTest";
         String calendarId = "";
@@ -270,9 +290,8 @@ public class MeetingService {
             }
         }
 
-
-        event = calendarService.events().insert(calendarId, event).execute();
-        System.out.printf("Event created: %s\n", event.getHtmlLink());
+        meetingEvent = calendarService.events().insert(calendarId, meetingEvent).execute();
+        System.out.printf("Event created: %s\n", meetingEvent.getHtmlLink());
     }
 
 
@@ -310,49 +329,52 @@ public class MeetingService {
     public static ArrayList<Event> readEvents () throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
 
-        String calendarSummary = "chronosTest";
-        String calendarId = "";
-        CalendarList calendarList = calendarService.calendarList().list().execute();
-        List<CalendarListEntry> calendarListItems = calendarList.getItems();
-
-        for (CalendarListEntry calendarListEntry : calendarListItems) {
-            if (Objects.equals(calendarListEntry.getSummary(), calendarSummary)) {
-                calendarId = calendarListEntry.getId();
-            }
-        }
+//        String calendarSummary = "primary";
+//        String calendarId = "";
+//        CalendarList calendarList = calendarService.calendarList().list().execute();
+//        List<CalendarListEntry> calendarListItems = calendarList.getItems();
+//
+//        for (CalendarListEntry calendarListEntry : calendarListItems) {
+//            if (Objects.equals(calendarListEntry.getSummary(), calendarSummary)) {
+//                calendarId = calendarListEntry.getId();
+//            }
+//        }
 
 
         Events events = calendarService.events().list("primary")
+                .setMaxResults(10)
+                .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
-        ArrayList<com.google.api.services.calendar.model.Event> items = (ArrayList<Event>) events.getItems();
-//        if (items.isEmpty()) {
-//            System.out.println("No upcoming events found.");
-//        } else {
-//            System.out.println("Upcoming events");
-//            for (Event event : items) {
-//                DateTime start = event.getStart().getDateTime();
-//                List<EventAttendee> attendees = event.getAttendees();
-//                String creatorEmail = event.getCreator().getEmail();
-//
-//                System.out.println("The creator is: " + creatorEmail);
-//
-//                if (start == null) {
-//                    start = event.getStart().getDate();
-//                }
-////                System.out.printf("%s (%s)\n", event.getSummary(), start);
-////                if (attendees != null) {
-////                    for (EventAttendee attendee : attendees) {
-////                        String attendeeEmail = attendee.getEmail();
-////                        System.out.println("The attendees are: " + attendeeEmail);
-////                    }
-////                } else {
-////                    System.out.println("There are no attendees for the above event");
-////                }
-//            }
-//        }
-        return items;
+        List<com.google.api.services.calendar.model.Event> items = events.getItems();
+        System.out.println(items);
+        if (items.isEmpty()) {
+            System.out.println("No upcoming events found.");
+        } else {
+            System.out.println("Upcoming events");
+            for (Event event : items) {
+                DateTime start = event.getStart().getDateTime();
+                List<EventAttendee> attendees = event.getAttendees();
+                String creatorEmail = event.getCreator().getEmail();
+
+                System.out.println("The creator is: " + creatorEmail);
+
+                if (start == null) {
+                    start = event.getStart().getDate();
+                }
+                System.out.printf("%s (%s)\n", event.getSummary(), start);
+                if (attendees != null) {
+                    for (EventAttendee attendee : attendees) {
+                        String attendeeEmail = attendee.getEmail();
+                        System.out.println("The attendees are: " + attendeeEmail);
+                    }
+                } else {
+                    System.out.println("There are no attendees for the above event");
+                }
+            }
+        }
+        return (ArrayList<Event>) items;
     }
     //Ends the Google Calendar Functions
 
@@ -424,14 +446,14 @@ public class MeetingService {
     }
 
 
-    public static void sendMail(String subject, String message) throws Exception {
+    public static void sendMail(String subject, String message, String EmailRecipient) throws Exception {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage email = new MimeMessage(session);
         email.setFrom(new InternetAddress(TEST_EMAIL));
-        email.addRecipient(TO, new InternetAddress(TEST_SEND_TO_EMAIL));
+        email.addRecipient(TO, new InternetAddress(EmailRecipient));
         email.setSubject(subject);
         email.setText(message);
 
@@ -456,7 +478,18 @@ public class MeetingService {
         }
     }
 
-    public static void createAndSendEmail() throws Exception {
-        sendMail("A new message", "Hello There It's Me. \n What's Up?");
+    public static void createAndSendEmail(String groupId) throws Exception {
+        Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        Event meeting = group.getMeeting();
+        DateTime dt = meeting.getStart().getDateTime();
+        String date = dt.toString();
+        ArrayList<User> userList = group.getUserList();
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
+            String userEmail = user.getEmail();
+            sendMail("Chronos Meeting Reminder",
+                    "Hello there, you have a meeting on" + date + "\n Meet you there! :)",
+                    userEmail);
+        }
     }
 }

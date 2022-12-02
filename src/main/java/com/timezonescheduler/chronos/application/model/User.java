@@ -14,7 +14,7 @@ import java.util.ArrayList;
 @Document
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "name")
+        property = "id")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class User {
     private double timezone; //UTC -12 =< t >= +14
     //Google oath ID or whatever?
     private Calendar calendar;
-    @DBRef
+    @DBRef//(db = "group")
     private ArrayList<Group> groups;
     private String googleId;
     private String providerId;

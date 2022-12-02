@@ -10,8 +10,7 @@ import com.google.api.services.calendar.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,13 +33,6 @@ public class GroupController {
         return groupService.getGroup(groupId);
     }
 
-    @GetMapping({"{userid}"})
-    public ArrayList<Group> getGroups(@PathVariable String userid){
-
-        User user = userService.getUser(userid).orElseThrow(RuntimeException::new);
-        return user.getGroups();
-    }
-
     @GetMapping("/getUserList/{groupId}")
     public ArrayList<String> getUserList(@PathVariable("groupId") String groupId) {
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
@@ -50,6 +42,23 @@ public class GroupController {
             emailList.add(i,list.get(i).getEmail());
         }
         return emailList;
+    }
+
+    @GetMapping({"{userid}"})
+    public ArrayList<Group> getGroups(@PathVariable String userid){
+
+        User user = userService.getUser(userid).orElseThrow(RuntimeException::new);
+        System.out.println(user);
+
+//        //Changes here
+//        ArrayList<Group> groupList = user.getGroups();
+//        ArrayList<Group> groups = new ArrayList<>();
+//        for (int i = 0; i < groupList.toArray().length; i++) {
+//
+//        }
+
+        //Ends changes here
+        return user.getGroups();
     }
 
     @GetMapping("/getgroupname/{groupId}")
@@ -84,14 +93,32 @@ public class GroupController {
             @RequestParam(required = false) ArrayList<User> userList,
             @RequestParam(required = false) Event meeting,
             @RequestParam(required = false) ArrayList<Event> eventList) {
+
+//        String name = newName.substring(1, newName.length() - 1);
+//        System.out.println(name);
+
         groupService.updateGroup(groupId, name, userList, meeting, eventList);
+    }
+
+    @PatchMapping(path = "updateGroupName/{groupId}")
+    public void updateGroupName(
+            @PathVariable("groupId") String groupId,
+            @RequestBody String newName) {
+
+        String name = newName.substring(1, newName.length() - 1);
+        System.out.println(name);
+        groupService.updateGroup(groupId, name, null, null, null);
     }
 
     @PatchMapping(path = "adduser/{groupId}")
     public void addUserToGroup(
             @PathVariable("groupId") String groupId,
-            @RequestBody User user
+            @RequestBody String plusEmail
     ){
+        String email = plusEmail.substring(1, plusEmail.length() - 1);
+        System.out.println(email);
+        User user = userService.getUserByEmail(email).orElseThrow(RuntimeException::new);
+        System.out.println(user);
         groupService.addUserToGroup(groupId, user);
 
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
@@ -102,8 +129,11 @@ public class GroupController {
     @PatchMapping(path = "removeuser/{groupId}")
     public void removeUserFromGroup(
             @PathVariable("groupId") String groupId,
-            @RequestBody User user
+            @RequestBody String removeEmail
     ){
+        String email = removeEmail.substring(1, removeEmail.length() - 1);
+        System.out.println(email);
+        User user = userService.getUserByEmail(email).orElseThrow();
         groupService.removeUserFromGroup(groupId, user);
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
         user.removeGroup(group);
