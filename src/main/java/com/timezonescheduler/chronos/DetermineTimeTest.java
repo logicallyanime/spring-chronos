@@ -190,10 +190,10 @@ public class DetermineTimeTest{
 
         long meetingLength = 7200000;
 
-        MeetingService ms = new MeetingService();
+        //MeetingService ms = new MeetingService();
 
-        ArrayList<Event> events = ms.readEvents();
-        determineMeetingTime(meetingLength, dayStart, events);
+        //ArrayList<Event> events = ms.readEvents();
+        //determineMeetingTime(meetingLength, dayStart, events);
     }
 
     public static ArrayList<ChronosPair<Event, String>> determineMeetingTime(long meetingLength, DateTime dayStart, ArrayList<Event> events) throws IOException, GeneralSecurityException {
