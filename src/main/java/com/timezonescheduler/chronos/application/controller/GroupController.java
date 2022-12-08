@@ -124,6 +124,7 @@ public class GroupController {
         groupService.addUserToGroup(groupId, user);
 
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        System.out.println(group);
         user.addGroup(group);
         userService.patchResource(user.getId(), user);
     }

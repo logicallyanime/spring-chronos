@@ -13,7 +13,7 @@ package com.timezonescheduler.chronos.application.test;
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START people_quickstart]
+// Modified use of main
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;

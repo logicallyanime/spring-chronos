@@ -71,7 +71,7 @@ public class GroupService {
         }
 
         if(userList != null &&
-                userList.size() == 0 &&
+                userList.size() != 0 &&
                 !Objects.equals(group.getUserList(), userList)){
             group.setUserList(userList);
             changed = true;
