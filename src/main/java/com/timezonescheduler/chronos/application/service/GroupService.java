@@ -39,11 +39,15 @@ public class GroupService {
     }
 
     public Optional<Group> getGroup(String groupId) {
-        boolean exists = groupRepo.existsById(groupId);
-        if (!exists) {
-            throw new IllegalStateException("group with id " + groupId + " does not exist");
-        }
-        return groupRepo.findById(groupId);
+//        boolean exists = groupRepo.existsById(groupId);
+//        if (!exists) {
+//            throw new IllegalStateException("group with id " + groupId + " does not exist");
+//        }
+//        return groupRepo.findById(groupId);
+
+        Group group = groupRepo.findById(groupId).orElseThrow(() -> new IllegalStateException(
+                "group with id " + groupId + " does not exist."));
+        return Optional.ofNullable(group);
     }
 
     public void removeGroup(String groupId){
@@ -67,6 +71,7 @@ public class GroupService {
         }
 
         if(userList != null &&
+                userList.size() != 0 &&
                 !Objects.equals(group.getUserList(), userList)){
             group.setUserList(userList);
             changed = true;
@@ -128,6 +133,6 @@ public class GroupService {
     public void setMeeting(String groupId, Event meeting){
         Group group = getGroup(groupId).get();
         group.setMeeting(meeting);
-        updateGroup(group.getId(), group.getName(), group.getUserList(), group.getMeeting(), group.getEventList());
+        updateGroup(group.getId(), null, null, group.getMeeting(), null);
     }
 }

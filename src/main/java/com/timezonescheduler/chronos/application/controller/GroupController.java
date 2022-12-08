@@ -1,5 +1,6 @@
 package com.timezonescheduler.chronos.application.controller;
 
+import com.google.api.services.calendar.model.EventDateTime;
 import com.timezonescheduler.chronos.application.service.UserService;
 import com.timezonescheduler.chronos.application.util.ChronosPair;
 import com.timezonescheduler.chronos.application.service.GroupService;
@@ -38,6 +39,7 @@ public class GroupController {
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
         ArrayList<User> list = group.getUserList();
         ArrayList<String> emailList = new ArrayList<>();
+        System.out.println(list);
         for (int i = 0; i < list.size(); i++) {
             emailList.add(i,list.get(i).getEmail());
         }
@@ -122,6 +124,7 @@ public class GroupController {
         groupService.addUserToGroup(groupId, user);
 
         Group group = groupService.getGroup(groupId).orElseThrow(RuntimeException::new);
+        System.out.println(group);
         user.addGroup(group);
         userService.patchResource(user.getId(), user);
     }
@@ -163,8 +166,13 @@ public class GroupController {
     @PatchMapping(path = "meeting/{groupId}")
     public void setMeeting(
             @PathVariable("groupId") String groupId,
-            @RequestParam Event meeting
+            @RequestParam long startTime,
+            @RequestParam long endTime
     ){
+        Event meeting = new Event();
+        meeting.setStart(new EventDateTime().setDateTime(new DateTime(startTime)));
+        meeting.setEnd(new EventDateTime().setDateTime(new DateTime(endTime)));
+        System.out.println(meeting);
         groupService.setMeeting(groupId, meeting);
     }
 }
